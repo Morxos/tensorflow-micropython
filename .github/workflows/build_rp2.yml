@@ -82,7 +82,7 @@ jobs:
 
           # ADAFRUIT_FEATHER_RP2040
           cmake -S ports/rp2 -B build-ADAFRUIT_FEATHER_RP2040 -DPICO_BUILD_DOCS=0 -DMICROPY_BOARD=ADAFRUIT_FEATHER_RP2040 \
-          -DUSER_C_MODULES=/home/runner/work/tensorflow-micropython-examples/tensorflow-micropython-examples/micropython-modules/micropython.cmake
+          -DUSER_C_MODULES=/home/runner/work/tensorflow-micropython-examples/micropython-modules/micropython.cmake
 
           cd build-ADAFRUIT_FEATHER_RP2040
           make
