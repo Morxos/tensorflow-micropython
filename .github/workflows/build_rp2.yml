@@ -62,7 +62,7 @@ jobs:
       - name: Build micropython cross compiler
         run:  |
           cd ./micropython
-          make -C ports/rp2 submodules
+          make -C ports/rp2 BOARD=RPI_PICO_W submodules
           echo "make -C mpy-cross V=1 clean all"
           make -C mpy-cross V=1 clean all
       - name: Build RP2
@@ -74,6 +74,7 @@ jobs:
 
 
           # PICO
+          make -C ports/rp2 BOARD=RPI_PICO_W submodules
           cmake -S ports/rp2 -B build-PICO -DPICO_BUILD_DOCS=0 -DMICROPY_BOARD=RPI_PICO_W \
                     -DUSER_C_MODULES=/home/runner/work/tensorflow-micropython-examples/tensorflow-micropython-examples/micropython-modules/micropython.cmake
 
