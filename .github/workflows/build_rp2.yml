@@ -48,16 +48,8 @@ jobs:
         run: |
           source ./micropython/tools/ci.sh && ci_rp2_setup
 
-#      - name: Cache tflm
-#        id: cache-tflm
-#        uses: actions/cache@v2
-#        env:
-#          cache-name: cache-rp2-tflm
-#        with:
-#          path: ./micropython-modules/microlite/tflm
-#          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ env.tflm-commit }}
+
       - name: Setup Build for Tensorflow
-#        if: steps.cache-tflm.outputs.cache-hit != 'true'
         run: |
 
           echo "Regenerating microlite/tfm directory"
@@ -70,7 +62,7 @@ jobs:
       - name: Build micropython cross compiler
         run:  |
           cd ./micropython
-          make -C ports/rp2 submodules
+          make -C ports/rp2 BOARD=RPI_PICO_W submodules
           echo "make -C mpy-cross V=1 clean all"
           make -C mpy-cross V=1 clean all
       - name: Build RP2
@@ -80,31 +72,9 @@ jobs:
           ln -s ../micropython-ulab/code  ulab
           cd ../micropython
 
-          # ADAFRUIT_FEATHER_RP2040
-          cmake -S ports/rp2 -B build-ADAFRUIT_FEATHER_RP2040 -DPICO_BUILD_DOCS=0 -DMICROPY_BOARD=ADAFRUIT_FEATHER_RP2040 \
-          -DUSER_C_MODULES=/home/runner/work/tensorflow-micropython-examples/tensorflow-micropython-examples/micropython-modules/micropython.cmake
-
-          cd build-ADAFRUIT_FEATHER_RP2040
-          make
-          cd ..
-
-          # ADAFRUIT_ITSYBITSY_RP2040
-          cmake -S ports/rp2 -B build-ADAFRUIT_ITSYBITSY_RP2040 -DPICO_BUILD_DOCS=0 -DMICROPY_BOARD=ADAFRUIT_ITSYBITSY_RP2040 \
-                    -DUSER_C_MODULES=/home/runner/work/tensorflow-micropython-examples/tensorflow-micropython-examples/micropython-modules/micropython.cmake
-
-          cd build-ADAFRUIT_ITSYBITSY_RP2040
-          make
-          cd ..
-
-          # ADAFRUIT_QTPY_RP2040
-          cmake -S ports/rp2 -B build-ADAFRUIT_QTPY_RP2040 -DPICO_BUILD_DOCS=0 -DMICROPY_BOARD=ADAFRUIT_QTPY_RP2040 \
-                    -DUSER_C_MODULES=/home/runner/work/tensorflow-micropython-examples/tensorflow-micropython-examples/micropython-modules/micropython.cmake
-
-          cd build-ADAFRUIT_QTPY_RP2040
-          make
-          cd ..
 
           # PICO
+          make -C ports/rp2 BOARD=RPI_PICO_W submodules
           cmake -S ports/rp2 -B build-PICO -DPICO_BUILD_DOCS=0 -DMICROPY_BOARD=RPI_PICO_W \
                     -DUSER_C_MODULES=/home/runner/work/tensorflow-micropython-examples/tensorflow-micropython-examples/micropython-modules/micropython.cmake
 
@@ -113,149 +83,18 @@ jobs:
           make
           cd ..          
 
-          # PIMORONI_PICOLIPO_4MB
-          cmake -S ports/rp2 -B build-PIMORONI_PICOLIPO_4MB -DPICO_BUILD_DOCS=0 -DMICROPY_BOARD=PIMORONI_PICOLIPO_4MB \
-                    -DUSER_C_MODULES=/home/runner/work/tensorflow-micropython-examples/tensorflow-micropython-examples/micropython-modules/micropython.cmake
-
-          cd build-PIMORONI_PICOLIPO_4MB
-          make
-          cd ..          
-
-          # PIMORONI_PICOLIPO_16MB
-          cmake -S ports/rp2 -B build-PIMORONI_PICOLIPO_16MB -DPICO_BUILD_DOCS=0 -DMICROPY_BOARD=PIMORONI_PICOLIPO_16MB \
-                    -DUSER_C_MODULES=/home/runner/work/tensorflow-micropython-examples/tensorflow-micropython-examples/micropython-modules/micropython.cmake
-
-
-          cd build-PIMORONI_PICOLIPO_16MB
-          make
-          cd ..          
-
-          # PIMORONI_TINY2040
-          cmake -S ports/rp2 -B build-PIMORONI_TINY2040 -DPICO_BUILD_DOCS=0 -DMICROPY_BOARD=PIMORONI_TINY2040 \
-                    -DUSER_C_MODULES=/home/runner/work/tensorflow-micropython-examples/tensorflow-micropython-examples/micropython-modules/micropython.cmake
-
-          cd build-PIMORONI_TINY2040
-          make
-          cd ..          
-
-          # SPARKFUN_PROMICRO
-          cmake -S ports/rp2 -B build-SPARKFUN_PROMICRO -DPICO_BUILD_DOCS=0 -DMICROPY_BOARD=SPARKFUN_PROMICRO \
-                    -DUSER_C_MODULES=/home/runner/work/tensorflow-micropython-examples/tensorflow-micropython-examples/micropython-modules/micropython.cmake
-
-          cd build-SPARKFUN_PROMICRO
-          make
-          cd ..          
-
-          # SPARKFUN_THINGPLUS
-          cmake -S ports/rp2 -B build-SPARKFUN_THINGPLUS -DPICO_BUILD_DOCS=0 -DMICROPY_BOARD=SPARKFUN_THINGPLUS \
-                    -DUSER_C_MODULES=/home/runner/work/tensorflow-micropython-examples/tensorflow-micropython-examples/micropython-modules/micropython.cmake
-
-          cd build-SPARKFUN_THINGPLUS
-          make
           
-      - name: Archive ADAFRUIT_FEATHER_RP2040 firmware
-        uses: actions/upload-artifact@v2
-        with:
-          name: microlite-rp2-adafruit-feather-rp2040-firmware
-          path: |
-            micropython/build-ADAFRUIT_FEATHER_RP2040/firmware.elf
-            micropython/build-ADAFRUIT_FEATHER_RP2040/firmware.bin
-            micropython/build-ADAFRUIT_FEATHER_RP2040/firmware.dis
-            micropython/build-ADAFRUIT_FEATHER_RP2040/firmware.elf.map
-            micropython/build-ADAFRUIT_FEATHER_RP2040/firmware.hex
-            micropython/build-ADAFRUIT_FEATHER_RP2040/firmware.uf2
-
-      - name: Archive ADAFRUIT_ITSYBITSY_RP2040 firmware
-        uses: actions/upload-artifact@v2
-        with:
-          name: microlite-rp2-adafruit-itsybitsy-rp2040-firmware
-          path: |
-            micropython/build-ADAFRUIT_ITSYBITSY_RP2040/firmware.elf
-            micropython/build-ADAFRUIT_ITSYBITSY_RP2040/firmware.bin
-            micropython/build-ADAFRUIT_ITSYBITSY_RP2040/firmware.dis
-            micropython/build-ADAFRUIT_ITSYBITSY_RP2040/firmware.elf.map
-            micropython/build-ADAFRUIT_ITSYBITSY_RP2040/firmware.hex
-            micropython/build-ADAFRUIT_ITSYBITSY_RP2040/firmware.uf2
-      - name: Archive ADAFRUIT_QTPY_RP2040 firmware
-        uses: actions/upload-artifact@v2
-        with:
-          name: microlite-rp2-adafruit-qtpy-rp2040-firmware
-          path: |
-            micropython/build-ADAFRUIT_QTPY_RP2040/firmware.elf
-            micropython/build-ADAFRUIT_QTPY_RP2040/firmware.bin
-            micropython/build-ADAFRUIT_QTPY_RP2040/firmware.dis
-            micropython/build-ADAFRUIT_QTPY_RP2040/firmware.elf.map
-            micropython/build-ADAFRUIT_QTPY_RP2040/firmware.hex
-            micropython/build-ADAFRUIT_QTPY_RP2040/firmware.uf2
 
       - name: Archive PICO firmware
         uses: actions/upload-artifact@v2
         with:
           name: microlite-rp2-pico-firmware
           path: |
-            micropython/build-PICO/firmware.elf
-            micropython/build-PICO/firmware.bin
-            micropython/build-PICO/firmware.dis
-            micropython/build-PICO/firmware.elf.map
-            micropython/build-PICO/firmware.hex
-            micropython/build-PICO/firmware.uf2
+            micropython/build-RPI_PICO_W/firmware.elf
+            micropython/build-RPI_PICO_W/firmware.bin
+            micropython/build-RPI_PICO_W/firmware.dis
+            micropython/build-RPI_PICO_W/firmware.elf.map
+            micropython/build-RPI_PICO_W/firmware.hex
+            micropython/build-RPI_PICO_W/firmware.uf2
 
-      - name: Archive PIMORONI_PICOLIPO_4MB firmware
-        uses: actions/upload-artifact@v2
-        with:
-          name: microlite-rp2-pimoroni-picolipo-4mb-firmware
-          path: |
-            micropython/build-PIMORONI_PICOLIPO_4MB/firmware.elf
-            micropython/build-PIMORONI_PICOLIPO_4MB/firmware.bin
-            micropython/build-PIMORONI_PICOLIPO_4MB/firmware.dis
-            micropython/build-PIMORONI_PICOLIPO_4MB/firmware.elf.map
-            micropython/build-PIMORONI_PICOLIPO_4MB/firmware.hex
-            micropython/build-PIMORONI_PICOLIPO_4MB/firmware.uf2
-
-      - name: Archive PIMORONI_PICOLIPO_16MB firmware
-        uses: actions/upload-artifact@v2
-        with:
-          name: microlite-rp2-pimoroni-picolipo-16mb-firmware
-          path: |
-            micropython/build-PIMORONI_PICOLIPO_16MB/firmware.elf
-            micropython/build-PIMORONI_PICOLIPO_16MB/firmware.bin
-            micropython/build-PIMORONI_PICOLIPO_16MB/firmware.dis
-            micropython/build-PIMORONI_PICOLIPO_16MB/firmware.elf.map
-            micropython/build-PIMORONI_PICOLIPO_16MB/firmware.hex
-            micropython/build-PIMORONI_PICOLIPO_16MB/firmware.uf2
-
-      - name: Archive PIMORONI_TINY2040 firmware
-        uses: actions/upload-artifact@v2
-        with:
-          name: microlite-rp2-pimoroni-tiny2040-firmware
-          path: |
-            micropython/build-PIMORONI_TINY2040/firmware.elf
-            micropython/build-PIMORONI_TINY2040/firmware.bin
-            micropython/build-PIMORONI_TINY2040/firmware.dis
-            micropython/build-PIMORONI_TINY2040/firmware.elf.map
-            micropython/build-PIMORONI_TINY2040/firmware.hex
-            micropython/build-PIMORONI_TINY2040/firmware.uf2
-
-      - name: Archive SPARKFUN_PROMICRO firmware
-        uses: actions/upload-artifact@v2
-        with:
-          name: microlite-rp2-sparkfun_promicro-firmware
-          path: |
-            micropython/build-SPARKFUN_PROMICRO/firmware.elf
-            micropython/build-SPARKFUN_PROMICRO/firmware.bin
-            micropython/build-SPARKFUN_PROMICRO/firmware.dis
-            micropython/build-SPARKFUN_PROMICRO/firmware.elf.map
-            micropython/build-SPARKFUN_PROMICRO/firmware.hex
-            micropython/build-SPARKFUN_PROMICRO/firmware.uf2
-
-      - name: Archive SPARKFUN_THINGPLUS firmware
-        uses: actions/upload-artifact@v2
-        with:
-          name: microlite-rp2-sparkfun_thingplus-firmware
-          path: |
-            micropython/build-SPARKFUN_THINGPLUS/firmware.elf
-            micropython/build-SPARKFUN_THINGPLUS/firmware.bin
-            micropython/build-SPARKFUN_THINGPLUS/firmware.dis
-            micropython/build-SPARKFUN_THINGPLUS/firmware.elf.map
-            micropython/build-SPARKFUN_THINGPLUS/firmware.hex
-            micropython/build-SPARKFUN_THINGPLUS/firmware.uf2
+      
