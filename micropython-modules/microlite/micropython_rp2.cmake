@@ -39,7 +39,6 @@ include (${CMAKE_CURRENT_LIST_DIR}/micropython_esp.cmake)
 
 get_filename_component(TENSORFLOW_DIR ${PROJECT_DIR}/../../../tensorflow ABSOLUTE)
 
-#add_library(microlite INTERFACE)
 
 # needed when we have custom/specialized kernels.
 # add_custom_command(
