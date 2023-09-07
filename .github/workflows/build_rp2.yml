@@ -20,7 +20,7 @@ on:
 
 jobs:
   tensorflow_micropython_rp2_build:
-    runs-on: [self-hosted]
+    runs-on: [ubuntu-latest]
 
     steps:
       - name: Set up Python 3.8
@@ -44,9 +44,9 @@ jobs:
         run: |
           TFLM_COMMIT=$(git submodule status tensorflow | awk '{print ($1)}')
           echo "tflm-commit=$TFLM_COMMIT" >> $GITHUB_ENV
-      #- name: Setup GCC ARM
-      #  run: |
-      #    source ./micropython/tools/ci.sh && ci_rp2_setup
+      - name: Setup GCC ARM
+        run: |
+          source ./micropython/tools/ci.sh && ci_rp2_setup
 
 
       - name: Setup Build for Tensorflow
