@@ -72,7 +72,7 @@ jobs:
           ln -s ../micropython-ulab/code  ulab
           cd ../micropython
           cd ports/rp2
-          make BOARD=RPI_PI_PICO USER_C_MODULES=/home/runner/actions-runner/_work/tensorflow-micropython-examples/tensorflow-micropython-examples/micropython-modules/micropython.cmake
+          make BOARD=RPI_PICO_w USER_C_MODULES=/home/runner/actions-runner/_work/tensorflow-micropython-examples/tensorflow-micropython-examples/micropython-modules/micropython.cmake
 
           # PICO
           #cmake -S ports/rp2 -B build-RPI_PICO_W -DPICO_BUILD_DOCS=0 -DMICROPY_BOARD=RPI_PICO_W \
