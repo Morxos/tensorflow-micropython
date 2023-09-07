@@ -78,8 +78,8 @@ jobs:
           cmake -S ports/rp2 -B build-PICO -DPICO_BUILD_DOCS=0 -DMICROPY_BOARD=RPI_PICO_W \
                     -DUSER_C_MODULES=/home/runner/actions-runner/_work/tensorflow-micropython-examples/tensorflow-micropython-examples/micropython-modules/micropython.cmake
 
-
-          cd build-PICO
+          echo "Finished cmake"
+          cd build-PICO_W
           make
           cd ..          
 
